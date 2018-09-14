@@ -2,10 +2,10 @@ package com.revolut.skiftcha.service;
 
 import com.revolut.skiftcha.model.Account;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface AccountService {
-    List<Account> listAccounts();
+    Collection<Account> listAccounts();
     int getBalance(int id);
     void deposit(int id, int amount);
     void withdraw(int id, int amount);

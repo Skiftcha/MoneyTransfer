@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class AccountDAOImpl implements AccountDAO {
 
@@ -21,8 +21,8 @@ public class AccountDAOImpl implements AccountDAO {
     }
 
     @Override
-    public List<Account> listAccounts() throws SQLException {
-        List<Account> accounts = new ArrayList<>();
+    public Collection<Account> listAccounts() throws SQLException {
+        Collection<Account> accounts = new ArrayList<>();
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(
                      "select id, balance from account")) {
