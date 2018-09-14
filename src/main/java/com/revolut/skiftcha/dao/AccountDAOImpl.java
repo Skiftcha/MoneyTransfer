@@ -1,6 +1,5 @@
 package com.revolut.skiftcha.dao;
 
-import com.revolut.skiftcha.db.DataSource;
 import com.revolut.skiftcha.model.Account;
 
 import java.sql.Connection;
@@ -15,9 +14,8 @@ public class AccountDAOImpl implements AccountDAO {
 
     private final Connection connection;
 
-    public AccountDAOImpl() throws SQLException {
-        connection = DataSource.getConnection();
-        connection.setAutoCommit(false);
+    public AccountDAOImpl(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
@@ -59,16 +57,5 @@ public class AccountDAOImpl implements AccountDAO {
             pst.setInt(2, id);
             pst.executeUpdate();
         }
-    }
-
-    @Override
-    public void close() throws SQLException {
-        connection.rollback();
-        connection.close();
-    }
-
-    @Override
-    public void commit() throws SQLException {
-        connection.commit();
     }
 }
