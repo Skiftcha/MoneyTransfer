@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'idea'
 }
 
 group 'com.revolut.skiftcha'
@@ -22,4 +24,34 @@ dependencies {
     compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.11.v20180605'
     compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.11.v20180605'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+mainClassName = "com.revolut.skiftcha.app.AppServer"
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/test-integration/java')
+        }
+        resources.srcDir file('src/test-integration/resources')
+    }
+}
+
+task integrationTest(type: Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+idea {
+    module {
+        testSourceDirs += sourceSets.integrationTest.java.srcDirs
+        testResourceDirs += sourceSets.integrationTest.resources.srcDirs
+        scopes.TEST.plus += [ configurations.integrationTestCompile ]
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
