@@ -1,45 +1,60 @@
 package com.revolut.skiftcha.controller;
 
 import com.revolut.skiftcha.model.Account;
+import com.revolut.skiftcha.model.AccountRequest;
+import com.revolut.skiftcha.model.TransferRequest;
 import com.revolut.skiftcha.service.AccountService;
 import com.revolut.skiftcha.service.AccountServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
-@Path("/accounts")
-@Produces(MediaType.APPLICATION_JSON)
+@Path("accounts")
 public class AccountsController {
     private static final Logger LOG = LoggerFactory.getLogger(AccountsController.class);
 
     private AccountService service = new AccountServiceImpl();
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public Collection<Account> listAccounts() {
+        LOG.debug("get accounts");
         return service.listAccounts();
     }
 
     @GET
-    @Path("/{id}")
+    @Path("{id}")
+    @Produces(MediaType.TEXT_PLAIN)
     public int getBalance(@PathParam("id") int id) {
         return service.getBalance(id);
     }
 
-    public void deposit(int id, int amount) {
-
+    @POST
+    @Path("deposit")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deposit(AccountRequest request) {
+        service.deposit(request.getId(), request.getAmount());
     }
 
-    public void withdraw(int id, int amount) {
-
+    @POST
+    @Path("withdraw")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void withdraw(AccountRequest request) {
+        service.withdraw(request.getId(), request.getAmount());
     }
 
-    public void transfer(int from, int to, int amount) {
-
+    @POST
+    @Path("transfer")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void transfer(TransferRequest request) {
+        service.transfer(request.getFrom(), request.getTo(), request.getAmount());
     }
 }

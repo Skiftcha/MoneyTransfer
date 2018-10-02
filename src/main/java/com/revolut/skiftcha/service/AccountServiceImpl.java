@@ -34,6 +34,7 @@ public class AccountServiceImpl implements AccountService {
             AccountDAO dao = new AccountDAOImpl(connection);
             Integer balance = dao.getBalance(id);
             if (balance == null) {
+                connection.rollback();
                 throw new NotFoundException("Account does not exist");
             } else {
                 return balance;
@@ -52,6 +53,7 @@ public class AccountServiceImpl implements AccountService {
             try {
                 Integer balance = dao.getBalance(id);
                 if (balance == null) {
+                    connection.rollback();
                     throw new BadRequestException("Account does not exist");
                 }
                 dao.setBalance(id, balance + amount);
@@ -76,9 +78,11 @@ public class AccountServiceImpl implements AccountService {
             try {
                 Integer balance = dao.getBalance(id);
                 if (balance == null) {
+                    connection.rollback();
                     throw new BadRequestException("Account does not exist");
                 }
                 if (balance < amount) {
+                    connection.rollback();
                     throw new BadRequestException("Not enough money for withdrawal");
                 }
                 dao.setBalance(id, balance - amount);
@@ -112,12 +116,15 @@ public class AccountServiceImpl implements AccountService {
                     fromBalance = dao.getBalance(from);
                 }
                 if (fromBalance == null) {
+                    connection.rollback();
                     throw new BadRequestException("Source account does not exist");
                 }
                 if (toBalance == null) {
+                    connection.rollback();
                     throw new BadRequestException("Destination account does not exist");
                 }
                 if (fromBalance < amount) {
+                    connection.rollback();
                     throw new BadRequestException("Not enough money for transfer");
                 }
                 dao.setBalance(from, fromBalance - amount);
