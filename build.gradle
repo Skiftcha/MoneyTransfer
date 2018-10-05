@@ -45,6 +45,8 @@ task integrationTest(type: Test) {
 
 idea {
     module {
+        outputDir file("$buildDir/classes/main")
+        testOutputDir file("$buildDir/classes/test")
         testSourceDirs += sourceSets.integrationTest.java.srcDirs
         testResourceDirs += sourceSets.integrationTest.resources.srcDirs
         scopes.TEST.plus += [ configurations.integrationTestCompile ]

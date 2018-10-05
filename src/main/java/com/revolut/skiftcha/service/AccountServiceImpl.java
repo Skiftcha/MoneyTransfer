@@ -4,6 +4,7 @@ import com.revolut.skiftcha.dao.AccountDAO;
 import com.revolut.skiftcha.dao.AccountDAOImpl;
 import com.revolut.skiftcha.db.DataSource;
 import com.revolut.skiftcha.model.Account;
+import com.revolut.skiftcha.model.HistoryRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,17 @@ public class AccountServiceImpl implements AccountService {
         try (Connection connection = DataSource.getConnection()) {
             AccountDAO dao = new AccountDAOImpl(connection);
             return dao.listAccounts();
+        } catch (SQLException e) {
+            LOG.error("Cannot get accounts from database", e);
+            throw new InternalServerErrorException(e);
+        }
+    }
+
+    @Override
+    public Collection<HistoryRecord> getHistory() {
+        try (Connection connection = DataSource.getConnection()) {
+            AccountDAO dao = new AccountDAOImpl(connection);
+            return dao.getHistory();
         } catch (SQLException e) {
             LOG.error("Cannot get accounts from database", e);
             throw new InternalServerErrorException(e);
@@ -57,6 +69,7 @@ public class AccountServiceImpl implements AccountService {
                     throw new BadRequestException("Account does not exist");
                 }
                 dao.setBalance(id, balance + amount);
+                dao.saveHistory(null, id, amount);
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
@@ -86,6 +99,7 @@ public class AccountServiceImpl implements AccountService {
                     throw new BadRequestException("Not enough money for withdrawal");
                 }
                 dao.setBalance(id, balance - amount);
+                dao.saveHistory(id, null, amount);
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
@@ -129,6 +143,7 @@ public class AccountServiceImpl implements AccountService {
                 }
                 dao.setBalance(from, fromBalance - amount);
                 dao.setBalance(to, toBalance + amount);
+                dao.saveHistory(from, to, amount);
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
