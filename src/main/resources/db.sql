@@ -1,7 +1,6 @@
 create table if not exists account(
-  id bigint unsigned,
-  balance bigint unsigned,
-  constraint pk_id primary key (id)
+  id bigint unsigned auto_increment primary key,
+  balance bigint unsigned
 );
 
 create table if not exists balance_history(
@@ -10,8 +9,3 @@ create table if not exists balance_history(
   amount bigint unsigned,
   time datetime
 );
-
-merge into account key(id) values(1, 11);
-merge into account key(id) values(2, 13123);
-merge into account key(id) values(3, 111);
-merge into account key(id) values(4, 322);

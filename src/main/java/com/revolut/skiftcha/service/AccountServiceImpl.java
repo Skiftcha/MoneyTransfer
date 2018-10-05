@@ -35,7 +35,18 @@ public class AccountServiceImpl implements AccountService {
             AccountDAO dao = new AccountDAOImpl(connection);
             return dao.getHistory();
         } catch (SQLException e) {
-            LOG.error("Cannot get accounts from database", e);
+            LOG.error("Cannot get account history from database", e);
+            throw new InternalServerErrorException(e);
+        }
+    }
+
+    @Override
+    public int createAccount() {
+        try (Connection connection = DataSource.getConnection()) {
+            AccountDAO dao = new AccountDAOImpl(connection);
+            return dao.createAccount();
+        } catch (SQLException e) {
+            LOG.error("Cannot create account", e);
             throw new InternalServerErrorException(e);
         }
     }

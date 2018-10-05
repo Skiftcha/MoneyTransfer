@@ -98,4 +98,20 @@ public class AccountDAOImpl implements AccountDAO {
             pst.executeUpdate();
         }
     }
+
+    @Override
+    public int createAccount() throws SQLException {
+        try (PreparedStatement pst = connection.prepareStatement(
+                "insert into account(id, balance) values (default, ?)", Statement.RETURN_GENERATED_KEYS)) {
+            pst.setInt(1, 0);
+            pst.executeUpdate();
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                } else {
+                    throw new SQLException("Cannot create account");
+                }
+            }
+        }
+    }
 }

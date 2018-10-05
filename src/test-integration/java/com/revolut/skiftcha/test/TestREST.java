@@ -17,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 
-import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.junit.Assert.assertEquals;
 
@@ -29,27 +28,49 @@ public class TestREST {
 
     @Test
     public void testListAccounts() {
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-        Collection<Account> accounts = invocationBuilder.get(new GenericType<Collection<Account>>() {});
-        accounts.forEach(account -> {
-            LOG.info("accountId {} balance {}", account.getId(), account.getBalance());
-        });
+        int countBefore = listAccounts().size();
+        createAccount();
+        createAccount();
+        createAccount();
+        int countAfter = listAccounts().size();
+        assertEquals(countBefore + 3, countAfter);
     }
 
     @Test
     public void testDepositHistory() {
-        Invocation.Builder invocationBuilder = webTarget.path("deposit").request(MediaType.APPLICATION_JSON);
-        AccountRequest request = new AccountRequest();
-        request.setId(1);
-        request.setAmount(10);
-        Response response = invocationBuilder.post(Entity.entity(request, MediaType.APPLICATION_JSON));
+        int id = createAccount();
+
+        Response response = deposit(id, 10);
         assertEquals(response.getStatus(), HTTP_NO_CONTENT);
 
-        invocationBuilder = webTarget.path("history").request(MediaType.APPLICATION_JSON);
-        Collection<HistoryRecord> records = invocationBuilder.get(new GenericType<Collection<HistoryRecord>>() {});
+        Collection<HistoryRecord> records = getHistory();
+
         records.forEach(record -> {
             LOG.info("history record from {} to {} amount {} datetime {}",
                     record.getFrom(), record.getTo(), record.getAmount(), record.getTime());
         });
+    }
+
+    private Collection<Account> listAccounts() {
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        return invocationBuilder.get(new GenericType<Collection<Account>>() {});
+    }
+
+    private int createAccount() {
+        Invocation.Builder invocationBuilder = webTarget.path("create").request(MediaType.TEXT_PLAIN);
+        return invocationBuilder.get(Integer.class);
+    }
+
+    private Response deposit(int id, int amount) {
+        Invocation.Builder invocationBuilder = webTarget.path("deposit").request(MediaType.APPLICATION_JSON);
+        AccountRequest request = new AccountRequest();
+        request.setId(id);
+        request.setAmount(amount);
+        return invocationBuilder.post(Entity.entity(request, MediaType.APPLICATION_JSON));
+    }
+
+    private Collection<HistoryRecord> getHistory() {
+        Invocation.Builder invocationBuilder = webTarget.path("history").request(MediaType.APPLICATION_JSON);
+        return invocationBuilder.get(new GenericType<Collection<HistoryRecord>>() {});
     }
 }

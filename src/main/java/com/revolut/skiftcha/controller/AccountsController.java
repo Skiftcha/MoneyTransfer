@@ -40,6 +40,14 @@ public class AccountsController {
     }
 
     @GET
+    @Path("create")
+    @Produces(MediaType.TEXT_PLAIN)
+    public int createAccount() {
+        LOG.debug("create account");
+        return service.createAccount();
+    }
+
+    @GET
     @Path("{id}")
     @Produces(MediaType.TEXT_PLAIN)
     public int getBalance(@PathParam("id") int id) {
