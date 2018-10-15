@@ -16,8 +16,3 @@ Runs application on 8080 port
 ./gradlew integrationTest
 ```
 Runs integration tests accessing api via 8080 port
-<br>
-For multiple test runs you can use ```--rerun-tasks``` option
-```
-./gradlew --rerun-tasks integrationTest
-```
