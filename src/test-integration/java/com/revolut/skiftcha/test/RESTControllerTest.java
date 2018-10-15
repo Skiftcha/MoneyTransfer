@@ -37,7 +37,7 @@ public class RESTControllerTest extends AbstractAccountsControllerTest{
     @Override
     protected int createAccount() {
         Invocation.Builder invocationBuilder = webTarget.path("create").request(MediaType.TEXT_PLAIN);
-        return invocationBuilder.get(Integer.class);
+        return invocationBuilder.post(Entity.json(null), Integer.class);
     }
 
     @Override
@@ -51,20 +51,20 @@ public class RESTControllerTest extends AbstractAccountsControllerTest{
     protected void deposit(AccountRequest request) {
         Invocation.Builder invocationBuilder = webTarget.path("deposit").request(MediaType.APPLICATION_JSON);
         assertEquals(HTTP_NO_CONTENT,
-                invocationBuilder.post(Entity.entity(request, MediaType.APPLICATION_JSON)).getStatus());
+                invocationBuilder.put(Entity.json(request)).getStatus());
     }
 
     @Override
     protected void withdraw(AccountRequest request) {
         Invocation.Builder invocationBuilder = webTarget.path("withdraw").request(MediaType.APPLICATION_JSON);
         assertEquals(HTTP_NO_CONTENT,
-                invocationBuilder.post(Entity.entity(request, MediaType.APPLICATION_JSON)).getStatus());
+                invocationBuilder.put(Entity.json(request)).getStatus());
     }
 
     @Override
     protected void transfer(TransferRequest transferRequest) {
         Invocation.Builder invocationBuilder = webTarget.path("transfer").request(MediaType.APPLICATION_JSON);
         assertEquals(HTTP_NO_CONTENT,
-                invocationBuilder.post(Entity.entity(transferRequest, MediaType.APPLICATION_JSON)).getStatus());
+                invocationBuilder.put(Entity.json(transferRequest)).getStatus());
     }
 }

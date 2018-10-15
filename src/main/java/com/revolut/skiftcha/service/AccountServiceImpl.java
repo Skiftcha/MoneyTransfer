@@ -77,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
                 Integer balance = dao.getBalance(id);
                 if (balance == null) {
                     connection.rollback();
-                    throw new BadRequestException("Account does not exist");
+                    throw new NotFoundException("Account does not exist");
                 }
                 dao.setBalance(id, balance + amount);
                 dao.saveHistory(null, id, amount);
@@ -103,7 +103,7 @@ public class AccountServiceImpl implements AccountService {
                 Integer balance = dao.getBalance(id);
                 if (balance == null) {
                     connection.rollback();
-                    throw new BadRequestException("Account does not exist");
+                    throw new NotFoundException("Account does not exist");
                 }
                 if (balance < amount) {
                     connection.rollback();
@@ -142,11 +142,11 @@ public class AccountServiceImpl implements AccountService {
                 }
                 if (fromBalance == null) {
                     connection.rollback();
-                    throw new BadRequestException("Source account does not exist");
+                    throw new NotFoundException("Source account does not exist");
                 }
                 if (toBalance == null) {
                     connection.rollback();
-                    throw new BadRequestException("Destination account does not exist");
+                    throw new NotFoundException("Destination account does not exist");
                 }
                 if (fromBalance < amount) {
                     connection.rollback();

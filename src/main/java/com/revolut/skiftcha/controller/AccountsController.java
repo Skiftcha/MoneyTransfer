@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -39,7 +40,7 @@ public class AccountsController {
         return service.getHistory();
     }
 
-    @GET
+    @POST
     @Path("create")
     @Produces(MediaType.TEXT_PLAIN)
     public int createAccount() {
@@ -55,7 +56,7 @@ public class AccountsController {
         return service.getBalance(id);
     }
 
-    @POST
+    @PUT
     @Path("deposit")
     @Consumes(MediaType.APPLICATION_JSON)
     public void deposit(AccountRequest request) {
@@ -63,7 +64,7 @@ public class AccountsController {
         service.deposit(request.getId(), request.getAmount());
     }
 
-    @POST
+    @PUT
     @Path("withdraw")
     @Consumes(MediaType.APPLICATION_JSON)
     public void withdraw(AccountRequest request) {
@@ -71,7 +72,7 @@ public class AccountsController {
         service.withdraw(request.getId(), request.getAmount());
     }
 
-    @POST
+    @PUT
     @Path("transfer")
     @Consumes(MediaType.APPLICATION_JSON)
     public void transfer(TransferRequest request) {
