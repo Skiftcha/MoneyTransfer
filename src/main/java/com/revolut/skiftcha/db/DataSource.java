@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DataSource {
-    private static final String JDBC_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MULTI_THREADED=TRUE;" +
+    private static final String JDBC_URL = "jdbc:h2:mem:money;DB_CLOSE_DELAY=-1;MULTI_THREADED=TRUE;" +
             "INIT=runscript from 'classpath:/db.sql'";
 
     private static HikariConfig config = new HikariConfig();
